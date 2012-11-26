@@ -12,7 +12,6 @@ ServerListener::ServerListener(QObject *parent) :
         qDebug()<<__FUNCTION__;
     connect(MainServer,SIGNAL(newConnection()),this,SLOT(hasNewConn()));
     connect(this,SIGNAL(hasNewData(QAbstractSocket*)),reader,SLOT(ReadData(QAbstractSocket*)));
-    //connect(MainServer,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onSocketError(QAbstractSocket::SocketError)))
 }
 void ServerListener::hasNewConn()
 {
@@ -24,7 +23,8 @@ void ServerListener::hasNewConn()
             {
                 qDebug()<<"MAXCONNECTION";
                 MainServer->nextPendingConnection()->close();
-                break;}
+                break;
+            }
             if(clients[i]==NULL)
             {
                 clients[i]=MainServer->nextPendingConnection();
@@ -41,7 +41,8 @@ void ServerListener::hasData()
 {
     for(int i=0;i<MAXCONNECTION;i++)
     {
-        if(clients[i]!=NULL&&clients[i]->isReadable()){
+        if(clients[i]!=NULL&&clients[i]->isReadable())
+        {
             qDebug()<<__FUNCTION__;
             emit hasNewData(clients[i]);
         }
@@ -49,14 +50,13 @@ void ServerListener::hasData()
 }
 void ServerListener::onSocketError(QAbstractSocket::SocketError s)
 {
-    //if(MainServer->e)
     for(int i=0;i<MAXCONNECTION;i++)
     {
         if(clients[i]&&clients[i]->error()==s)
         {
             qDebug()<<clients[i]->errorString();
             clients[i]->close();
-            delete clients[i];
+            //delete clients[i];
             clients[i]=NULL;
         }
     }
