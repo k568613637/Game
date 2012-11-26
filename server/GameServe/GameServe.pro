@@ -8,6 +8,7 @@ QT       += core
 
 QT       -= gui
 
+QT       += network
 TARGET = GameServe
 CONFIG   += console
 CONFIG   -= app_bundle
@@ -15,4 +16,10 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    serverlistener.cpp \
+    ../../packagereader.cpp
+
+HEADERS += \
+    serverlistener.h \
+    ../../packagereader.h
