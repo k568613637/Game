@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "Public.h"
-#include <QByteArray>
+#include <QDataStream>
 #include <QAbstractSocket>
 class PackageReader : public QObject
 {
@@ -17,7 +17,7 @@ public slots:
     void ReadData(QAbstractSocket *socket);
 
 private:
-    QByteArray data;
+    QDataStream stream;
     
 };
 
