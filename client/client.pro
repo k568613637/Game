@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     ../packagereader.cpp \
-    tcp.cpp
+    tcp.cpp \
+    ../userlist.cpp
 
 HEADERS  += mainwindow.h \
     ../Public.h \
     ../packagereader.h \
-    tcp.h
+    tcp.h \
+    ../userlist.h
 
 FORMS    += mainwindow.ui

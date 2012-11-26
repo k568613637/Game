@@ -12,3 +12,4 @@
 #define FAULT 0
 
 #define CMD_LOGIN 2
+#define CMD_GET_LIST 3

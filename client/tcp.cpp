@@ -12,7 +12,6 @@ Tcp::Tcp(QObject *parent) :
 void Tcp::ConnectTo(QHostAddress *add, quint16 port)
 {
     socket->connectToHost(*add,port);
-
 }
 bool Tcp::isOpen()
 {

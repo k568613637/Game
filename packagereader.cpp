@@ -5,11 +5,12 @@ PackageReader::PackageReader(QObject *parent) :
 {
     stream.setVersion(QDataStream::Qt_4_8);
 }
-void PackageReader::ReadData(QAbstractSocket *socket)
+void PackageReader::ReadData(QAbstractSocket *socket, UserList *list)
 {
     stream.setDevice(socket);
     int cmd;
     int length1,length2;
+    struct User *user;
     stream>>cmd;
     QString data1,data2;
     switch (cmd)
@@ -31,6 +32,17 @@ void PackageReader::ReadData(QAbstractSocket *socket)
          *bala
          *bala
          */
+        user = new struct User;
+        user->name=data1;
+        user->add=socket->peerAddress();
+        user->online=1;
+        user->port=socket->peerPort();
+        qDebug()<<user->name;
+        if(-1==list->Insert(user))
+        {
+            delete user;
+            goto Fault;
+        }
         stream<<SUCCEED;
         return ;
     default:
@@ -38,14 +50,4 @@ void PackageReader::ReadData(QAbstractSocket *socket)
     }
 Fault:
     stream<<FAULT;
-    /*
-    int b;
-    QString str;
-
-    stream>>a;
-    str.resize(a);
-    stream>>str;
-    stream>>b;
-    qDebug()<<__FUNCTION__<<a<<str<<b;
-*/
 }

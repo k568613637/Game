@@ -18,8 +18,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     serverlistener.cpp \
-    ../../packagereader.cpp
+    ../../packagereader.cpp \
+    ../../userlist.cpp
 
 HEADERS += \
     serverlistener.h \
-    ../../packagereader.h
+    ../../packagereader.h \
+    ../../Public.h \
+    ../../userlist.h

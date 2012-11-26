@@ -6,12 +6,13 @@ ServerListener::ServerListener(QObject *parent) :
     memset(clients,0,sizeof(QTcpSocket *)*MAXCONNECTION);
     reader = new PackageReader(this);
     MainServer = new QTcpServer(this);
+    list = new UserList();
     if(!MainServer)
         qDebug()<<__FUNCTION__;
     if(! (MainServer->listen(QHostAddress::Any,GAMESERVERPORT)) )
         qDebug()<<__FUNCTION__;
     connect(MainServer,SIGNAL(newConnection()),this,SLOT(hasNewConn()));
-    connect(this,SIGNAL(hasNewData(QAbstractSocket*)),reader,SLOT(ReadData(QAbstractSocket*)));
+    connect(this,SIGNAL(hasNewData(QAbstractSocket*,UserList *)),reader,SLOT(ReadData(QAbstractSocket*,UserList *)));
 }
 void ServerListener::hasNewConn()
 {
@@ -44,7 +45,7 @@ void ServerListener::hasData()
         if(clients[i]!=NULL&&clients[i]->isReadable())
         {
             qDebug()<<__FUNCTION__;
-            emit hasNewData(clients[i]);    //发送信号给数据包解析类
+            emit hasNewData(clients[i],list);    //发送信号给数据包解析类
         }
     }
 }
@@ -56,7 +57,7 @@ void ServerListener::onSocketError(QAbstractSocket::SocketError s)
         {
             qDebug()<<clients[i]->errorString();
             clients[i]->close();
-            //delete clients[i];
+            clients[i]->deleteLater();
             clients[i]=NULL;                      //关闭并清除错误的套结字
         }
     }
