@@ -19,13 +19,13 @@ void ServerListener::hasNewConn()
     {
         for(int i=0;;i++)
         {
-            if(i==MAXCONNECTION)
+            if(i==MAXCONNECTION)//连接队列已满
             {
                 qDebug()<<"MAXCONNECTION";
                 MainServer->nextPendingConnection()->close();
                 break;
             }
-            if(clients[i]==NULL)
+            if(clients[i]==NULL)//添加连接
             {
                 clients[i]=MainServer->nextPendingConnection();
                 connect(clients[i],SIGNAL(readyRead()),this,SLOT(hasData()));
@@ -44,7 +44,7 @@ void ServerListener::hasData()
         if(clients[i]!=NULL&&clients[i]->isReadable())
         {
             qDebug()<<__FUNCTION__;
-            emit hasNewData(clients[i]);
+            emit hasNewData(clients[i]);    //发送信号给数据包解析类
         }
     }
 }
@@ -57,7 +57,7 @@ void ServerListener::onSocketError(QAbstractSocket::SocketError s)
             qDebug()<<clients[i]->errorString();
             clients[i]->close();
             //delete clients[i];
-            clients[i]=NULL;
+            clients[i]=NULL;                      //关闭并清除错误的套结字
         }
     }
 }
