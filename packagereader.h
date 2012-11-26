@@ -5,7 +5,6 @@
 #include "Public.h"
 #include <QByteArray>
 #include <QAbstractSocket>
-#include <QDataStream>
 class PackageReader : public QObject
 {
     Q_OBJECT
@@ -19,7 +18,6 @@ public slots:
 
 private:
     QByteArray data;
-    QDataStream stream;
     
 };
 

@@ -3,18 +3,12 @@
 PackageReader::PackageReader(QObject *parent) :
     QObject(parent)
 {
-
+    data.resize(MAXBUFFSIZE);
 }
-void PackageReader::ReadData(QAbstractSocket *socket)//可能需要优化
+void PackageReader::ReadData(QAbstractSocket *socket)
 {
 
-    int a;
-    char str;
-    stream.setDevice(socket);
-    //data=(socket->readAll());
-    //qDebug()<<__FUNCTION__<<data.data();
-    stream>>a;
-    qDebug()<<a;
-
+    data.append(socket->readAll());
+    qDebug()<<__FUNCTION__<<data.data();
 
 }
