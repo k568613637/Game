@@ -19,8 +19,11 @@ public:
     UserList();
     ~UserList();
     int Insert(User *user);
+    struct User *GetUser(int i);
+    struct User *Next();
 private:
     struct User *users[MAXCONNECTION];
+    int current;
     
 };
 

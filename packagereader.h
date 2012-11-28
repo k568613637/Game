@@ -12,6 +12,7 @@ class PackageReader : public QObject
 public:
     explicit PackageReader(QObject *parent = 0);
     bool Login();
+    int SendList();
     
 signals:
     
@@ -19,8 +20,9 @@ public slots:
     void ReadData(QAbstractSocket *socket,UserList *);
 
 private:
-    QDataStream stream;
-    
+    QDataStream socketStream;
+    QAbstractSocket *s;
+    UserList *l;
 };
 
 #endif // PACKAGEREADER_H

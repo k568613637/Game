@@ -40,9 +40,35 @@ bool Tcp::login(QString &name, QString &passwd)
         return 0;
     stream>>resault;
     qDebug()<<__FUNCTION__<<resault;
-    if(resault==FAULT)
-        return 0;
-    return 1;
+    if(resault==SUCCEED)
+    {
+        if(socket->bytesAvailable())
+            hasNewDate();
+        connect(socket,SIGNAL(readyRead()),this,SLOT(hasNewDate()));
+        return 1;
+    }
+    return 0;
+}
+void Tcp::hasNewDate()
+{
+
+    int cmd;
+    stream>>cmd;
+    qDebug()<<__FUNCTION__<<"CMD:"<<cmd;
+    switch (cmd)
+    {
+    case VAL_USER:
+        hasNewUser();
+        break;
+    }
+}
+int Tcp::hasNewUser()
+{
+    int len;
+    stream>>len;
+    qDebug()<<__FUNCTION__<<len;
+    return 0;
+
 }
 
 Tcp::~Tcp()

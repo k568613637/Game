@@ -13,3 +13,5 @@
 
 #define CMD_LOGIN 2
 #define CMD_GET_LIST 3
+
+#define VAL_USER 4

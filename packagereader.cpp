@@ -3,51 +3,100 @@
 PackageReader::PackageReader(QObject *parent) :
     QObject(parent)
 {
-    stream.setVersion(QDataStream::Qt_4_8);
+    socketStream.setVersion(QDataStream::Qt_4_8);
 }
 void PackageReader::ReadData(QAbstractSocket *socket, UserList *list)
 {
-    stream.setDevice(socket);
+    socketStream.setDevice(socket);
+    l=list;
+    s=socket;
     int cmd;
-    int length1,length2;
-    struct User *user;
-    stream>>cmd;
+    socketStream>>cmd;
     QString data1,data2;
     switch (cmd)
     {
     case CMD_LOGIN:
-        stream>>length1;
+        if(!Login())
+            qDebug()<<"login fault";
+        SendList();
+        break;
+    case CMD_GET_LIST:
+        qDebug()<<SendList();
 
-        if(length1<0||length1>MAX_STR_LEN)
-            goto Fault;
-        data1.resize(length1);
-        stream>>data1;
-        stream>>length2;
-        if(length2<0||length2>MAX_STR_LEN)
-            goto Fault;
-        data2.resize(length2);
-        stream>>data2;
-        qDebug()<<data1<<data2;
-        /*bala
-         *bala
-         *bala
-         */
-        user = new struct User;
-        user->name=data1;
-        user->add=socket->peerAddress();
-        user->online=1;
-        user->port=socket->peerPort();
-        qDebug()<<user->name;
-        if(-1==list->Insert(user))
-        {
-            delete user;
-            goto Fault;
-        }
-        stream<<SUCCEED;
-        return ;
     default:
-        goto Fault;
+        break;
     }
-Fault:
-    stream<<FAULT;
+}
+
+bool PackageReader::Login()
+{
+    struct User *user;
+    int nameLen,passwdLen;
+    QString name,passwd;
+    socketStream>>nameLen;
+    if(nameLen<0||nameLen>MAX_STR_LEN)
+    {
+        socketStream<<FAULT;
+        return 0;
+    }
+    name.resize(nameLen);
+    socketStream>>name;
+    socketStream>>passwdLen;
+    if(passwdLen<0||passwdLen>MAX_STR_LEN)
+    {
+        socketStream<<FAULT;
+        return 0;
+    }
+    passwd.resize(passwdLen);
+    socketStream>>passwd;
+    qDebug()<<"user name"<<name<<"passwd:"<<passwd;
+    /*bala
+     *bala
+     *bala
+     */
+    user = new struct User;
+    user->name=name;
+    user->add=s->peerAddress();
+    user->online=1;
+    user->port=s->peerPort();
+    qDebug()<<user->name;
+    if(-1==l->Insert(user))
+    {
+        delete user;
+        socketStream<<FAULT;
+        return 0;
+    }
+    socketStream<<SUCCEED;
+    return 1;
+
+}
+int PackageReader::SendList()
+{
+    qDebug()<<__FUNCTION__;
+    int count=0;
+    struct User *user;
+
+    QByteArray data;
+    for(;;)
+    {
+
+        QDataStream stream(&data,QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_4_8);
+        user=l->Next();
+        if(user==NULL)
+            return count;
+        qDebug()<<user->name;
+        stream<<VAL_USER
+              <<user->name.length()
+              <<user->name
+              <<user->add.toIPv4Address()
+              <<user->port
+              <<user->online;
+        //socketStream<<data;
+        //stream.device()->seek(0);
+        socketStream.writeRawData(data.data(),data.size());
+        qDebug()<<data.data();
+        count++;
+   }
+
 }

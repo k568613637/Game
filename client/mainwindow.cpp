@@ -36,3 +36,8 @@ void MainWindow::on_login_clicked()
     }
 
 }
+
+void MainWindow::newUser(struct User *user)
+{
+
+}
