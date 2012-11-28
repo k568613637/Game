@@ -21,6 +21,8 @@ public:
     int Insert(User *user);
     struct User *GetUser(int i);
     struct User *Next();
+    void Del(int i);
+    int Del(QTcpSocket *socket);
 private:
     struct User *users[MAXCONNECTION];
     int current;

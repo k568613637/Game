@@ -27,6 +27,7 @@ void Tcp::onSocketError(QAbstractSocket::SocketError s)
 }
 bool Tcp::login(QString &name, QString &passwd)
 {
+    qDebug()<<__FUNCTION__<<"begin";
     stream.setDevice(socket);
     int resault;
     if(!isOpen())
@@ -42,7 +43,7 @@ bool Tcp::login(QString &name, QString &passwd)
     qDebug()<<__FUNCTION__<<resault;
     if(resault==SUCCEED)
     {
-        if(socket->bytesAvailable())
+        while(socket->bytesAvailable())
             hasNewDate();
         connect(socket,SIGNAL(readyRead()),this,SLOT(hasNewDate()));
         return 1;
@@ -52,21 +53,33 @@ bool Tcp::login(QString &name, QString &passwd)
 void Tcp::hasNewDate()
 {
 
-    int cmd;
-    stream>>cmd;
-    qDebug()<<__FUNCTION__<<"CMD:"<<cmd;
-    switch (cmd)
+    while(socket->bytesAvailable())
     {
-    case VAL_USER:
-        hasNewUser();
-        break;
+        int cmd;
+        stream>>cmd;
+        qDebug()<<__FUNCTION__<<"CMD:"<<cmd;
+        switch (cmd)
+        {
+        case VAL_USER:
+            hasNewUser();
+            break;
+        }
     }
 }
 int Tcp::hasNewUser()
 {
+    struct User *user;
+    quint32 ip;
+    user = new struct User;
     int len;
     stream>>len;
-    qDebug()<<__FUNCTION__<<len;
+    user->name.resize(len);
+    stream>>user->name;
+    stream>>ip;
+    stream>>user->port;
+    stream>>user->online;
+    user->add.setAddress(ip);
+    emit newUser(user);
     return 0;
 
 }

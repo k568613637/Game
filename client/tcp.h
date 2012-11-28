@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtNetwork>
 #include <QDataStream>
+#include "../userlist.h"
 #include "../Public.h"
 class Tcp : public QObject
 {

@@ -56,6 +56,7 @@ void ServerListener::onSocketError(QAbstractSocket::SocketError s)
         if(clients[i]&&clients[i]->error()==s)
         {
             qDebug()<<clients[i]->errorString();
+            list->Del(clients[i]);
             clients[i]->close();
             clients[i]->deleteLater();
             clients[i]=NULL;                      //关闭并清除错误的套结字

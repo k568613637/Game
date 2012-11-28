@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->listView->hide();
+    ui->listWidget->hide();
 
 
 }
@@ -22,6 +22,7 @@ void MainWindow::on_login_clicked()
     ServerSocket = new Tcp(this);
     QHostAddress add(GAMESERVERIP);
     ServerSocket->ConnectTo(&add,GAMESERVERPORT);
+    connect(ServerSocket,SIGNAL(newUser(User*)),this,SLOT(newUser(User*)));
     if(ServerSocket->isOpen())
     {
         if(!ServerSocket->login(ui->name->text(),ui->passwd->text()))
@@ -32,12 +33,21 @@ void MainWindow::on_login_clicked()
             return ;
         }
         ui->widget->hide();
-        ui->listView->show();
+        ui->listWidget->show();
     }
 
 }
 
 void MainWindow::newUser(struct User *user)
 {
+    map.insert(user->name,user);
+    ui->listWidget->addItem(user->name);
+}
+void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+
+
+
+
 
 }

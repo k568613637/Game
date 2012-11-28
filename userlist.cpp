@@ -42,6 +42,31 @@ struct User * UserList::Next()
     }
 }
 
+void UserList::Del(int i)
+{
+    if(users[i]!=NULL)
+    {
+        delete users[i];
+        users[i]=NULL;
+    }
+}
+int UserList::Del(QTcpSocket *socket)
+{
+    for(int i=0;i<MAXCONNECTION;i++)
+    {
+        if(users[i]!=NULL
+           &&users[i]->port==socket->peerPort()
+           &&users[i]->add==socket->peerAddress())
+        {
+            qDebug()<<users[i]->name<<users[i]->port;
+            delete users[i];
+            qDebug()<<__FUNCTION__<<"ok";
+            users[i]=NULL;
+            return i;
+        }
+    }
+    return 0;
+}
 
 UserList::~UserList()
 {

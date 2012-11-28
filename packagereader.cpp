@@ -3,10 +3,12 @@
 PackageReader::PackageReader(QObject *parent) :
     QObject(parent)
 {
-    socketStream.setVersion(QDataStream::Qt_4_8);
+
 }
 void PackageReader::ReadData(QAbstractSocket *socket, UserList *list)
 {
+    QDataStream socketStream;
+    socketStream.setVersion(QDataStream::Qt_4_8);
     socketStream.setDevice(socket);
     l=list;
     s=socket;
@@ -30,6 +32,9 @@ void PackageReader::ReadData(QAbstractSocket *socket, UserList *list)
 
 bool PackageReader::Login()
 {
+    QDataStream socketStream;
+    socketStream.setVersion(QDataStream::Qt_4_8);
+    socketStream.setDevice(s);
     struct User *user;
     int nameLen,passwdLen;
     QString name,passwd;
@@ -72,6 +77,9 @@ bool PackageReader::Login()
 }
 int PackageReader::SendList()
 {
+    QDataStream socketStream;
+    socketStream.setVersion(QDataStream::Qt_4_8);
+    socketStream.setDevice(s);
     qDebug()<<__FUNCTION__;
     int count=0;
     struct User *user;
@@ -84,7 +92,11 @@ int PackageReader::SendList()
         stream.setVersion(QDataStream::Qt_4_8);
         user=l->Next();
         if(user==NULL)
+        {
+            qDebug()<<__FUNCTION__<<"end";
             return count;
+
+        }
         qDebug()<<user->name;
         stream<<VAL_USER
               <<user->name.length()
@@ -92,11 +104,10 @@ int PackageReader::SendList()
               <<user->add.toIPv4Address()
               <<user->port
               <<user->online;
-        //socketStream<<data;
-        //stream.device()->seek(0);
         socketStream.writeRawData(data.data(),data.size());
-        qDebug()<<data.data();
         count++;
+        qDebug()<<__FUNCTION__<<"count"<<count;
    }
+
 
 }

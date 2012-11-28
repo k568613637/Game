@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 #include <QtNetwork>
 #include <QDataStream>
 #include <QMap>
@@ -21,6 +22,7 @@ public:
 private slots:
     void on_login_clicked();
     void newUser(struct User *);
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;

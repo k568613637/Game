@@ -20,7 +20,7 @@ public slots:
     void ReadData(QAbstractSocket *socket,UserList *);
 
 private:
-    QDataStream socketStream;
+    //QDataStream socketStream;
     QAbstractSocket *s;
     UserList *l;
 };
